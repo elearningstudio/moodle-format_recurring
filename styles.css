@@ -1,0 +1,13 @@
+.course-content ul.topics {margin:0;}
+.course-content ul.topics li.section {list-style: none;margin:5px 0 0 0;padding:0;}
+.course-content ul.topics li.section .content {margin:0 40px;}
+.course-content ul.topics li.section .left {width:40px;float:left;text-align:center;}
+.course-content ul.topics li.section .right {width:40px;float:right;text-align:center;}
+.jumpmenu {text-align:center;}
+/* Set settings */
+#recurring-settings {
+    background: transparent url([[pix:format_recurring|recurring]]) no-repeat 0px 0px;
+    width: 50px;
+    height: 50px;
+    float: left;
+}

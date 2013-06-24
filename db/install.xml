@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="course/format/recurring/db" VERSION="20121027" COMMENT="XMLDB file for Moodle course/format/recurring"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="format_recurring_settings" COMMENT="States the recurring course settings used with the given course." NEXT="format_recurring_reminders">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="courseid"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="recurring"/>
+        <FIELD NAME="recurring" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Is this a recurring course?" PREVIOUS="courseid" NEXT="template"/>
+        <FIELD NAME="template" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Is this a template course?" PREVIOUS="recurring" NEXT="parent"/>
+        <FIELD NAME="parent" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Which course should this course be cloned from?" PREVIOUS="template" NEXT="expires"/>
+        <FIELD NAME="expires" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When should this course first be repeated?  This will also set the expiry date for this course." PREVIOUS="parent" NEXT="next_date"/>
+        <FIELD NAME="next_date" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Next date to clone this course on" PREVIOUS="expires" NEXT="course_dur_qty"/>
+        <FIELD NAME="course_dur_qty" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Course duration - Number of days / weeks" PREVIOUS="next_date" NEXT="course_dur_unit"/>
+        <FIELD NAME="course_dur_unit" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Course duration - Unit (days / weeks / months / years)" PREVIOUS="course_dur_qty" NEXT="course_dur"/>
+        <FIELD NAME="course_dur" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Course duration per user" PREVIOUS="course_dur_unit" NEXT="course_freq_qty"/>
+        <FIELD NAME="course_freq_qty" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Clone course every x number of days, weeks, etc" PREVIOUS="course_dur" NEXT="course_freq_unit"/>
+        <FIELD NAME="course_freq_unit" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Clone course every x number of days, weeks, months years (UNIT)" PREVIOUS="course_freq_qty" NEXT="course_freq"/>
+        <FIELD NAME="course_freq" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="frequency of this course in days" PREVIOUS="course_freq_unit" NEXT="start_rem"/>
+        <FIELD NAME="start_rem" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Do you want to send out reminders for the course start date?" PREVIOUS="course_freq" NEXT="start_rem_dur_qty"/>
+        <FIELD NAME="start_rem_dur_qty" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Reminder quantity (number of days or weeks)" PREVIOUS="start_rem" NEXT="start_rem_dur_unit"/>
+        <FIELD NAME="start_rem_dur_unit" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Reminder Unit - (Days or Weeks)" PREVIOUS="start_rem_dur_qty" NEXT="start_rem_freq"/>
+        <FIELD NAME="start_rem_freq" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Reminder frequency (once or every x days / weeks)" PREVIOUS="start_rem_dur_unit" NEXT="start_rem_qty"/>
+        <FIELD NAME="start_rem_qty" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Course start reminder frequency quantity" PREVIOUS="start_rem_freq" NEXT="start_rem_unit"/>
+        <FIELD NAME="start_rem_unit" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Course start reminder frequency unit (days or weeks)" PREVIOUS="start_rem_qty" NEXT="end_rem"/>
+        <FIELD NAME="end_rem" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Send course end reminders?" PREVIOUS="start_rem_unit" NEXT="end_rem_dur_qty"/>
+        <FIELD NAME="end_rem_dur_qty" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="send course end reminder quantity Number of days / weeks" PREVIOUS="end_rem" NEXT="end_rem_dur_unit"/>
+        <FIELD NAME="end_rem_dur_unit" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Send course end frequency unit" PREVIOUS="end_rem_dur_qty" NEXT="end_rem_freq"/>
+        <FIELD NAME="end_rem_freq" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="every or none" PREVIOUS="end_rem_dur_unit" NEXT="end_rem_qty"/>
+        <FIELD NAME="end_rem_qty" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="end_rem_freq" NEXT="end_rem_unit"/>
+        <FIELD NAME="end_rem_unit" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="days or weeks" PREVIOUS="end_rem_qty"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="format_recurring_reminders" COMMENT="Table to store enrolment reminders on a per user basis" PREVIOUS="format_recurring_settings">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="courseid"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="ID of template (parent) course" PREVIOUS="id" NEXT="reminder_created"/>
+        <FIELD NAME="reminder_created" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Logs when reminder has been created to prevent it from being duplicated" PREVIOUS="courseid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User ID" PREVIOUS="reminder_created" NEXT="course_start"/>
+        <FIELD NAME="course_start" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Course Start" PREVIOUS="userid" NEXT="course_end"/>
+        <FIELD NAME="course_end" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Course End date" PREVIOUS="course_start"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
